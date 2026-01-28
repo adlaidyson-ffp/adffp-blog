@@ -129,19 +129,26 @@
             if (!response.ok) throw new Error(`Could not find /posts/${id}.md`);
             const text = await response.text();
             
-            // Simple Front-matter extraction
-            const fmMatch = text.match(/^---([\s\S]*?)---/);
-            const content = text.replace(/^---[\s\S]*?---/, '');
+            const lines = text.split('\n');
             const meta = {};
+            const contentLines = [];
             
-            if (fmMatch) {
-                fmMatch[1].split('\n').forEach(line => {
-                    const parts = line.split(':');
-                    if (parts.length >= 2) {
-                        meta[parts[0].trim()] = parts.slice(1).join(':').trim();
-                    }
-                });
-            }
+            // Look for lines starting with ## at the beginning of the file
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                // Match "## key: value"
+                const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
+                
+                if (metaMatch) {
+                    const key = metaMatch[1].trim().toLowerCase();
+                    const value = metaMatch[2].trim();
+                    meta[key] = value;
+                } else {
+                    contentLines.push(line);
+                }
+            });
+
+            const content = contentLines.join('\n').trim();
 
             return {
                 id: id,
