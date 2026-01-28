@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog | Fused Frame Photography</title>
     <link rel="icon" href="https://cdn-eu.fusedframe.co.uk/main-logos/jpg/squarefavicon-nocircle.jpg">
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gray-matter/4.0.3/gray-matter.min.js"></script>
     <style>
         .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; }
         .prose a { color: #94fdf8; text-decoration: none; }
@@ -23,13 +24,13 @@
     <!-- Header -->
     <header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/blog" class="flex items-center gap-3">
+            <a href="/" class="flex items-center gap-3">
                 <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
                 <span class="font-bold text-xl tracking-tight hidden sm:inline">BLOG</span>
             </a>
             <nav class="flex gap-6 text-sm font-medium text-slate-400">
-                <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Portfolio</a>
-                <a href="/blog" class="text-[#94fdf8]">Posts</a>
+                <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
+                <a href="/" class="text-[#94fdf8]">Post Feed</a>
             </nav>
         </div>
     </header>
@@ -42,11 +43,11 @@
                 <p class="text-slate-500">Developing frames...</p>
             </div>
 
-            <!-- Blog List View (Default) -->
+            <!-- Blog List View -->
             <div id="list-view" class="hidden">
                 <div class="mb-12">
                     <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Field Notes</h1>
-                    <p class="text-slate-400 text-lg">Behind the lens, technical guides, and project updates.</p>
+                    <p class="text-slate-400 text-lg">Behind the lens, technical guides, and project updates from Adlai Dyson.</p>
                 </div>
 
                 <div id="category-filter" class="flex flex-wrap gap-2 mb-8">
@@ -61,14 +62,14 @@
             <!-- Single Post View -->
             <div id="post-view" class="hidden">
                 <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition">
-                    ← Back to all posts
+                    ← Back to feed
                 </button>
                 <article>
                     <div id="post-header" class="mb-10">
                         <div id="post-meta" class="flex gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
                         <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
                         <div id="post-author" class="flex items-center gap-3 border-t border-slate-900 pt-6">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">AD</div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">AD</div>
                             <div>
                                 <p class="text-sm font-semibold text-slate-200" id="author-name"></p>
                                 <p class="text-xs text-slate-500" id="post-date"></p>
@@ -83,15 +84,17 @@
 
     <footer class="mt-20 py-10 border-t border-slate-900 text-center text-sm text-slate-500">
         <p>© Adlai Dyson | Fused Frame Photography</p>
-        <p class="mt-2">Powered by Cloudflare & Markdown</p>
+        <p class="mt-2 text-xs">Running on blog.fusedframe.co.uk</p>
     </footer>
 
     <script>
-        // Configuration: List your markdown filenames here
-        // In a real automated setup, you could use a GitHub action to generate this list.
-        const postFiles = [
-            'welcome-to-fused-frame.md',
-            'photography-gear-2024.md'
+        /** * POST REGISTRY
+         * List your .md filenames here (without the .md extension).
+         * Files must exist in the /posts/ directory.
+         */
+        const postIds = [
+            'welcome-to-fused-frame',
+            'photography-gear-2024'
         ];
 
         const state = {
@@ -102,8 +105,8 @@
         const router = {
             navigate: (path) => {
                 const url = new URL(window.location);
-                if (path === '/') url.searchParams.delete('post');
-                else url.searchParams.set('post', path);
+                if (path === '/') url.searchParams.delete('p');
+                else url.searchParams.set('p', path);
                 window.history.pushState({}, '', url);
                 handleRoute();
             }
@@ -111,45 +114,49 @@
 
         async function init() {
             try {
-                const loadedPosts = await Promise.all(postFiles.map(fetchPost));
+                // Fetch all posts from the /posts/ directory
+                const loadedPosts = await Promise.all(postIds.map(fetchPost));
                 state.posts = loadedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 handleRoute();
             } catch (err) {
-                console.error("Error loading posts:", err);
-                document.getElementById('loading').innerHTML = `<p class="text-red-400">Failed to load posts. Check console.</p>`;
+                console.error("Error loading blog posts:", err);
+                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
             }
         }
 
-        async function fetchPost(filename) {
-            const response = await fetch(`/blog/posts/${filename}`);
+        async function fetchPost(id) {
+            const response = await fetch(`/posts/${id}.md`);
+            if (!response.ok) throw new Error(`Could not find /posts/${id}.md`);
             const text = await response.text();
             
-            // Basic Front-matter parser since gray-matter is huge
+            // Simple Front-matter extraction
             const fmMatch = text.match(/^---([\s\S]*?)---/);
             const content = text.replace(/^---[\s\S]*?---/, '');
-            const metadata = {};
+            const meta = {};
             
             if (fmMatch) {
                 fmMatch[1].split('\n').forEach(line => {
-                    const [key, ...val] = line.split(':');
-                    if (key && val) metadata[key.trim()] = val.join(':').trim();
+                    const parts = line.split(':');
+                    if (parts.length >= 2) {
+                        meta[parts[0].trim()] = parts.slice(1).join(':').trim();
+                    }
                 });
             }
 
             return {
-                id: filename.replace('.md', ''),
-                title: metadata.title || 'Untitled',
-                date: metadata.date || 'Unknown Date',
-                author: metadata.author || 'Adlai Dyson',
-                category: metadata.category || 'General',
-                excerpt: metadata.excerpt || content.substring(0, 150).replace(/[#*`]/g, '') + '...',
+                id: id,
+                title: meta.title || 'Untitled Post',
+                date: meta.date || 'Recent',
+                author: meta.author || 'Adlai Dyson',
+                category: meta.category || 'Uncategorized',
+                excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
                 content: content
             };
         }
 
         function handleRoute() {
             const params = new URLSearchParams(window.location.search);
-            const postId = params.get('post');
+            const postId = params.get('p');
             
             document.getElementById('loading').classList.add('hidden');
             
@@ -158,7 +165,7 @@
             } else {
                 showList();
             }
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
         }
 
         function showList() {
@@ -169,6 +176,7 @@
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
             
+            // Generate category filter buttons
             const categories = ['All', ...new Set(state.posts.map(p => p.category))];
             filterContainer.innerHTML = categories.map(cat => `
                 <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
@@ -177,6 +185,11 @@
             `).join('');
 
             const filtered = state.currentFilter === 'All' ? state.posts : state.posts.filter(p => p.category === state.currentFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full py-10 text-slate-500 italic">No posts found in this category.</p>`;
+                return;
+            }
 
             grid.innerHTML = filtered.map(post => `
                 <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 card-hover">
@@ -188,7 +201,7 @@
                     <h2 class="text-2xl font-bold mb-3 group-hover:text-[#94fdf8] transition">${post.title}</h2>
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">${post.excerpt}</p>
                     <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        Read Entry <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        View Post <span class="group-hover:translate-x-1 transition-transform">→</span>
                     </div>
                 </article>
             `).join('');
@@ -212,7 +225,7 @@
             document.getElementById('post-title').innerText = post.title;
             document.getElementById('post-meta').innerHTML = `<span>${post.category}</span> <span>/</span> <span>${post.date}</span>`;
             document.getElementById('author-name').innerText = post.author;
-            document.getElementById('post-date').innerText = `Posted on ${post.date}`;
+            document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
         }
 
