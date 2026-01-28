@@ -15,9 +15,9 @@ Alongside, professional photography, you'll find me working on nature and wildli
 
 # What to Expect
 In the coming months, I'll be posting about:
-- Skills: An introduction to photography including, the Exposure Triangle, Composition and using Mobile Phones or Professional Cameras (such as a DSLR or Mirrorless)
-- Behind the Scenes: A look into the projects I am or have been doing.
-- Much More: Anything I think will make good content, I'll try and post.
+• Skills: An introduction to photography including, the Exposure Triangle, Composition and using Mobile Phones or Professional Cameras (such as a DSLR or Mirrorless)
+• Behind the Scenes: A look into the projects I am or have been doing.
+• Much More: Anything I think will make good content, I'll try and post.
 
 Thanks for taking your time to read, and I hope to see you again!
 Adlai :)
