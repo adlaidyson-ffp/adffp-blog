@@ -107,11 +107,9 @@
     </footer>
 
     <script>
-        /** * POST REGISTRY
-         * List your .md filenames here (without the .md extension).
-         */
         const postIds = [
-            'introducing-blog'
+            'welcome-to-fused-frame',
+            'photography-gear-2024'
         ];
 
         const state = {
@@ -134,10 +132,8 @@
         async function init() {
             try {
                 const loadedPosts = await Promise.all(postIds.map(fetchPost));
-                // Filter out any posts that failed to parse meaningful data
                 state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
                 
-                // Initialize Listeners
                 document.getElementById('search-input').addEventListener('input', (e) => {
                     state.searchQuery = e.target.value.toLowerCase();
                     renderList();
@@ -150,7 +146,7 @@
                 handleRoute();
             } catch (err) {
                 console.error("Error loading blog posts:", err);
-                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
+                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database.</p>`;
             }
         }
 
@@ -173,17 +169,22 @@
                         const value = metaMatch[2].trim();
                         meta[key] = value;
                     } else {
-                        // Avoid pushing empty header lines that were just markers
                         if (trimmed !== '##') contentLines.push(line);
                     }
                 });
 
                 const content = contentLines.join('\n').trim();
+                
+                // Combine date and time for hidden sorting logic
+                const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
+                const sortTimestamp = new Date(dateTimeStr).getTime();
 
                 return {
                     id: id,
                     title: meta.title || 'Untitled Post',
                     date: meta.date || 'Recent',
+                    time: meta.time || '',
+                    sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
                     author: meta.author || 'Adlai Dyson',
                     category: meta.category || 'Uncategorized',
                     excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
@@ -197,32 +198,16 @@
         function handleRoute() {
             const params = new URLSearchParams(window.location.search);
             const postId = params.get('p');
-            
             document.getElementById('loading').classList.add('hidden');
-            
-            if (postId) {
-                showPost(postId);
-            } else {
-                showList();
-            }
+            if (postId) showPost(postId);
+            else showList();
             window.scrollTo(0, 0);
-        }
-
-        function showList() {
-            // Update Meta for SEO
-            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
-            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
-
-            document.getElementById('post-view').classList.add('hidden');
-            document.getElementById('list-view').classList.remove('hidden');
-            renderList();
         }
 
         function renderList() {
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
             
-            // Categories
             const categories = ['All', ...new Set(state.posts.map(p => p.category))];
             filterContainer.innerHTML = categories.map(cat => `
                 <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
@@ -230,7 +215,6 @@
                 </button>
             `).join('');
 
-            // Filtering
             let filtered = state.posts.filter(p => {
                 const matchesCat = state.currentFilter === 'All' || p.category === state.currentFilter;
                 const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || 
@@ -238,11 +222,8 @@
                 return matchesCat && matchesSearch;
             });
 
-            // Sorting
             filtered.sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return state.sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+                return state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp;
             });
 
             if (filtered.length === 0) {
@@ -266,30 +247,28 @@
             `).join('');
         }
 
-        function setFilter(cat) {
-            state.currentFilter = cat;
-            renderList();
-        }
+        function setFilter(cat) { state.currentFilter = cat; renderList(); }
 
         function showPost(id) {
             const post = state.posts.find(p => p.id === id);
-            if (!post) {
-                router.navigate('/');
-                return;
-            }
-
-            // Update Meta for SEO
+            if (!post) { router.navigate('/'); return; }
             document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
             document.getElementById('meta-desc').content = post.excerpt;
-
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('post-view').classList.remove('hidden');
-
             document.getElementById('post-title').innerText = post.title;
             document.getElementById('post-meta').innerHTML = `<span>${post.category}</span> <span>/</span> <span>${post.date}</span>`;
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
+        }
+
+        function showList() {
+            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
+            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
+            document.getElementById('post-view').classList.add('hidden');
+            document.getElementById('list-view').classList.remove('hidden');
+            renderList();
         }
 
         window.addEventListener('popstate', handleRoute);
