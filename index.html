@@ -84,7 +84,7 @@
                 </button>
                 <article>
                     <div id="post-header" class="mb-10">
-                        <div id="post-meta" class="flex gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
+                        <div id="post-meta" class="flex flex-wrap gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
                         <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
                         <div id="post-author" class="flex items-center gap-3 border-t border-slate-900 pt-6">
                             <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">AD</div>
@@ -111,7 +111,8 @@
          * List your .md filenames here (without the .md extension).
          */
         const postIds = [
-            'introducing-blog'
+            '2026/introducing-blog',
+            '2026/making-exif-overlay'
         ];
 
         const state = {
@@ -184,6 +185,10 @@
                 const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
                 const sortTimestamp = new Date(dateTimeStr).getTime();
 
+                // Support multiple categories separated by commas
+                const rawCategories = meta.category || 'Uncategorized';
+                const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
+
                 return {
                     id: id,
                     title: meta.title || 'Untitled Post',
@@ -191,7 +196,7 @@
                     time: meta.time || '',
                     sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
                     author: meta.author || 'Adlai Dyson',
-                    category: meta.category || 'Uncategorized',
+                    categories: categories,
                     excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
                     content: content
                 };
@@ -228,17 +233,19 @@
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
             
-            // Categories
-            const categories = ['All', ...new Set(state.posts.map(p => p.category))];
+            // Extract all unique categories across all posts
+            const allCats = state.posts.flatMap(p => p.categories);
+            const categories = ['All', ...new Set(allCats)];
+            
             filterContainer.innerHTML = categories.map(cat => `
                 <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
                     ${cat}
                 </button>
             `).join('');
 
-            // Filtering
+            // Filtering: Post matches if "All" is selected OR if its categories array contains the filter
             let filtered = state.posts.filter(p => {
-                const matchesCat = state.currentFilter === 'All' || p.category === state.currentFilter;
+                const matchesCat = state.currentFilter === 'All' || p.categories.includes(state.currentFilter);
                 const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || 
                                      p.excerpt.toLowerCase().includes(state.searchQuery);
                 return matchesCat && matchesSearch;
@@ -256,8 +263,8 @@
 
             grid.innerHTML = filtered.map(post => `
                 <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 card-hover">
-                    <div class="flex gap-2 text-[10px] font-bold tracking-widest text-[#94fdf8] uppercase mb-4">
-                        <span>${post.category}</span>
+                    <div class="flex flex-wrap gap-2 text-[10px] font-bold tracking-widest uppercase mb-4">
+                        <span class="text-[#94fdf8]">${post.categories.join(' / ')}</span>
                         <span class="text-slate-700">•</span>
                         <span class="text-slate-500">${post.date}</span>
                     </div>
@@ -290,7 +297,11 @@
             document.getElementById('post-view').classList.remove('hidden');
 
             document.getElementById('post-title').innerText = post.title;
-            document.getElementById('post-meta').innerHTML = `<span>${post.category}</span> <span>/</span> <span>${post.date}</span>`;
+            
+            // Render multiple categories in the header
+            const catHtml = post.categories.map(cat => `<span>${cat}</span>`).join(' <span class="text-slate-700">/</span> ');
+            document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
+            
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
