@@ -1,5 +1,6 @@
 ## title: Welcome to the Blog
 ## date: 2026-01-28
+## time: 21:00
 ## author: Adlai Dyson
 ## category: Announcements
 ## excerpt: Introducing my new blog! Read more about me and what's to come in here...

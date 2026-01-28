@@ -180,10 +180,16 @@
 
                 const content = contentLines.join('\n').trim();
 
+                // Logic for precise sorting using date AND time
+                const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
+                const sortTimestamp = new Date(dateTimeStr).getTime();
+
                 return {
                     id: id,
                     title: meta.title || 'Untitled Post',
                     date: meta.date || 'Recent',
+                    time: meta.time || '',
+                    sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
                     author: meta.author || 'Adlai Dyson',
                     category: meta.category || 'Uncategorized',
                     excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
@@ -238,11 +244,9 @@
                 return matchesCat && matchesSearch;
             });
 
-            // Sorting
+            // Advanced Sorting
             filtered.sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return state.sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+                return state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp;
             });
 
             if (filtered.length === 0) {
