@@ -124,15 +124,14 @@
                     <!-- Comments Section (Self-hosted Cusdis) -->
                     <div class="mt-12 bg-slate-900/30 p-8 rounded-2xl border border-slate-900">
                         <h3 class="text-xl font-bold mb-8">Comments</h3>
-                        <div id="cusdis_thread" 
-                            data-host="https://cusdis.com" 
-                            data-app-id="REPLACE_WITH_YOUR_CUSDIS_APP_ID" 
-                            data-page-id="" 
-                            data-page-url="" 
-                            data-page-title=""
-                            data-theme="dark">
-                        </div>
-                        <script async src="https://cusdis.com/js/cusdis.es.js"></script>
+                        <div id="cusdis_thread"
+                            data-host="https://bcomments.adffp.uk"
+                            data-app-id="a8d705af-b57b-483a-81cf-7177d83d6b5a"
+                            data-page-id="{{ PAGE_ID }}"
+                            data-page-url="{{ PAGE_URL }}"
+                            data-page-title="{{ PAGE_TITLE }}"
+                        ></div>
+                        <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
                     </div>
                 </article>
             </div>
@@ -152,7 +151,8 @@
     <script>
         /** * POST REGISTRY */
         const postIds = [
-            'introducing-blog'
+            'introducing-blog',
+            'making-exif-overlay'
         ];
 
         const state = {
