@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="meta-title">Blog | Adlai Dyson | Fused Frame Photography</title>
-    <meta name="description" id="meta-desc" content="Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posts to learn about photography, skills, and my journey!">
+    <meta name="description" id="meta-desc" content="Photography insights, technical guides, and project updates from Adlai Dyson.">
     <link rel="icon" href="https://cdn-eu.fusedframe.co.uk/main-logos/jpg/squarefavicon-nocircle.jpg">
     
     <!-- Analytics: Umami -->
     <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
     
-    <!-- Tailwind CSS for styling -->
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
-        .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; }
-        .prose a { color: #94fdf8; text-decoration: none; }
+        .prose img { border-radius: 0.75rem; margin: 2rem 0; border: 1px solid #1e293b; }
+        .prose a { color: #94fdf8; text-decoration: none; font-weight: 500; }
         .prose a:hover { text-decoration: underline; }
-        .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 1.5em; }
-        .prose p { margin-bottom: 1.25em; line-height: 1.75; color: #94a3b8; }
+        .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 2em; margin-bottom: 0.5em; }
+        .prose h1 { font-size: 1.875rem; }
+        .prose p { margin-bottom: 1.25em; line-height: 1.8; color: #cbd5e1; }
         .brand-glow { text-shadow: 0 0 20px rgba(148, 253, 248, 0.2); }
         .card-hover:hover { border-color: #94fdf8; box-shadow: 0 0 25px rgba(148, 253, 248, 0.05); }
         input:focus { outline: none; border-color: #94fdf8 !important; box-shadow: 0 0 10px rgba(148, 253, 248, 0.1); }
-        .share-btn:active { transform: scale(0.95); }
-        /* Style for Cusdis iframe container */
         #cusdis_thread iframe { width: 100% !important; color-scheme: dark; }
     </style>
 </head>
@@ -34,13 +32,13 @@
     <!-- Header -->
     <header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" onclick="event.preventDefault(); router.navigate('/')" class="flex items-center gap-3">
+            <a href="javascript:void(0)" onclick="router.navigate('/')" class="flex items-center gap-3">
                 <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
                 <span class="font-bold text-xl tracking-tight hidden sm:inline uppercase">Blog</span>
             </a>
             <nav class="flex gap-6 text-sm font-medium text-slate-400">
                 <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
-                <a href="/" onclick="event.preventDefault(); router.navigate('/')" class="text-[#94fdf8]">Post Feed</a>
+                <a href="javascript:void(0)" onclick="router.navigate('/')" class="text-[#94fdf8]">Post Feed</a>
             </nav>
         </div>
     </header>
@@ -53,24 +51,19 @@
                 <p class="text-slate-500">Developing frames...</p>
             </div>
 
-            <!-- Blog List View -->
+            <!-- List View -->
             <div id="list-view" class="hidden">
                 <div class="mb-12">
                     <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Posts</h1>
-                    <p class="text-slate-400 text-lg mb-8">Select a post below to read it.</p>
+                    <p class="text-slate-400 text-lg mb-8">Photography insights and technical logs.</p>
                     
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                        <div class="relative w-full md:max-w-md">
-                            <input type="text" id="search-input" placeholder="Search titles or keywords..." 
-                                class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200 focus:ring-1 focus:ring-[#94fdf8]">
-                        </div>
-                        <div class="flex items-center gap-3 w-full md:w-auto">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sort:</label>
-                            <select id="sort-select" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300 focus:ring-1 focus:ring-[#94fdf8] cursor-pointer">
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                            </select>
-                        </div>
+                        <input type="text" id="search-input" placeholder="Search posts..." 
+                            class="w-full md:max-w-md bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200">
+                        <select id="sort-select" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
                     </div>
                 </div>
 
@@ -84,51 +77,34 @@
                     ← Back to feed
                 </button>
                 <article>
-                    <div id="post-header" class="mb-10">
-                        <div id="post-meta" class="flex flex-wrap items-center gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
-                        <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
-                        <div id="post-author" class="flex items-center justify-between gap-3 border-t border-slate-900 pt-6">
+                    <div class="mb-10">
+                        <div id="post-meta-tags" class="flex flex-wrap items-center gap-3 text-xs text-[#94fdf8] font-mono mb-4 uppercase tracking-widest"></div>
+                        <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6 leading-tight"></h1>
+                        <div class="flex items-center justify-between border-t border-slate-900 pt-6">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">AD</div>
+                                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">AD</div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-200" id="author-name"></p>
-                                    <p class="text-xs text-slate-500" id="post-date"></p>
+                                    <p class="text-xs text-slate-500" id="post-date-full"></p>
                                 </div>
                             </div>
                             <div id="read-time" class="text-xs text-slate-600 font-mono"></div>
                         </div>
                     </div>
                     
-                    <div id="post-content" class="prose max-w-none mb-12"></div>
+                    <div id="post-content" class="prose max-w-none mb-12 border-b border-slate-900 pb-12"></div>
 
-                    <!-- Social Sharing -->
-                    <div class="border-y border-slate-900 py-8 mb-12">
-                        <h3 class="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4">Share this post</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <button id="share-tw" class="share-btn flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 px-4 py-2 rounded-lg text-sm transition">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                                X / Twitter
-                            </button>
-                            <button id="share-fb" class="share-btn flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 px-4 py-2 rounded-lg text-sm transition">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                                Facebook
-                            </button>
-                            <button id="share-copy" class="share-btn flex items-center gap-2 bg-slate-900 hover:bg-[#94fdf8] hover:text-slate-950 border border-slate-800 px-4 py-2 rounded-lg text-sm transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                                <span id="copy-text">Copy Link</span>
-                            </button>
-                        </div>
+                    <!-- Socials & Comments -->
+                    <div class="flex flex-wrap gap-3 mb-12">
+                        <button id="share-tw" class="share-btn bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-slate-800 transition">X / Twitter</button>
+                        <button id="share-copy" class="share-btn bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-[#94fdf8] hover:text-slate-950 transition">Copy Link</button>
                     </div>
 
-                    <!-- Comments Section (Self-hosted Cusdis) -->
-                    <div class="mt-12 bg-slate-900/30 p-8 rounded-2xl border border-slate-900">
+                    <div class="bg-slate-900/30 p-8 rounded-2xl border border-slate-900">
                         <h3 class="text-xl font-bold mb-8">Comments</h3>
                         <div id="cusdis_thread"
                             data-host="https://bcomments.adffp.uk"
                             data-app-id="a8d705af-b57b-483a-81cf-7177d83d6b5a"
-                            data-page-id=""
-                            data-page-url=""
-                            data-page-title=""
                         ></div>
                         <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
                     </div>
@@ -138,16 +114,12 @@
     </main>
 
     <footer class="mt-20 py-10 border-t border-slate-900 text-center text-sm text-slate-500">
-        <p class="font-medium text-slate-400 mb-1">© Adlai Dyson | Fused Frame Photography. All rights reserved.</p>
-        <p class="text-xs">View more info at <a href="https://adffp.uk/copyright" class="text-slate-500 hover:text-[#94fdf8] underline underline-offset-4">adffp.uk/copyright</a></p>
-        <div class="mt-4 flex justify-center gap-4 text-[10px] opacity-30">
-            <span>Running on blog.fusedframe.co.uk</span>
-            <span>•</span>
-            <a href="https://analytics.adffp.uk/share/c490b3f9-34ee-485d-b09a-5f869f545a12/fusedframe-blog" class="hover:underline">Public Analytics</a>
-        </div>
+        <p class="font-medium text-slate-400">© Adlai Dyson | Fused Frame Photography</p>
+        <p class="text-xs mt-2">Running on blog.fusedframe.co.uk</p>
     </footer>
 
     <script>
+        // List of .md files in your /posts/ folder
         const postIds = [
             'introducing-blog',
             'making-exif-overlay'
@@ -170,89 +142,90 @@
             }
         };
 
-        async function init() {
-            try {
-                const loadedPosts = await Promise.all(postIds.map(fetchPost));
-                state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
-                
-                document.getElementById('search-input').addEventListener('input', (e) => {
-                    state.searchQuery = e.target.value.toLowerCase();
-                    renderList();
-                });
-                document.getElementById('sort-select').addEventListener('change', (e) => {
-                    state.sortBy = e.target.value;
-                    renderList();
-                });
-
-                handleRoute();
-            } catch (err) {
-                console.error("Error loading blog posts:", err);
-                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database.</p>`;
-            }
-        }
-
         async function fetchPost(id) {
             try {
-                const response = await fetch(`/posts/${id}.md`);
-                if (!response.ok) return { id, title: 'Untitled Post' };
+                const response = await fetch(`./posts/${id}.md`);
+                if (!response.ok) throw new Error(`Could not fetch ${id}`);
                 const text = await response.text();
                 
                 const lines = text.split('\n');
                 const meta = {};
-                const contentLines = [];
-                let inMeta = false;
+                const bodyLines = [];
+                let finishedMeta = false;
 
-                // Simple but effective Markdown frontmatter parser (looking for ## key: value)
-                lines.forEach(line => {
+                for (let line of lines) {
                     const trimmed = line.trim();
+                    // Detect your specific metadata headers: ## key: value
                     const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
-                    if (metaMatch) {
+                    
+                    if (!finishedMeta && metaMatch) {
                         const key = metaMatch[1].trim().toLowerCase();
                         const value = metaMatch[2].trim();
                         meta[key] = value;
-                    } else if (trimmed !== '##') {
-                        contentLines.push(line);
+                    } else {
+                        // Once we hit a line that isn't metadata, treat rest as body
+                        if (trimmed !== '') finishedMeta = true; 
+                        bodyLines.push(line);
                     }
-                });
+                }
 
-                const content = contentLines.join('\n').trim();
+                const content = bodyLines.join('\n').trim();
                 const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
                 const sortTimestamp = new Date(dateTimeStr).getTime();
-                const rawCategories = meta.category || 'Uncategorized';
-                const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
-
-                const wordCount = content.split(/\s+/).length;
-                const readTime = Math.ceil(wordCount / 200) || 1;
+                
+                // Handle multiple categories
+                const categories = meta.category 
+                    ? meta.category.split(',').map(c => c.trim()) 
+                    : ['Uncategorized'];
 
                 return {
-                    id: id,
+                    id,
                     title: meta.title || 'Untitled Post',
-                    date: meta.date || 'Recent',
-                    time: meta.time || '',
+                    date: meta.date || 'Unknown Date',
                     sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
                     author: meta.author || 'Adlai Dyson',
-                    categories: categories,
-                    excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
-                    content: content,
-                    readTime: readTime
+                    categories,
+                    excerpt: meta.excerpt || content.substring(0, 150).replace(/[#*`]/g, '') + '...',
+                    content,
+                    readTime: Math.ceil(content.split(/\s+/).length / 200) || 1
                 };
             } catch (e) {
-                return { id, title: 'Untitled Post' };
+                console.warn(`Error processing post ${id}:`, e);
+                return null;
             }
+        }
+
+        async function init() {
+            const results = await Promise.all(postIds.map(fetchPost));
+            state.posts = results.filter(p => p !== null);
+            
+            document.getElementById('search-input').oninput = (e) => {
+                state.searchQuery = e.target.value.toLowerCase();
+                renderList();
+            };
+            document.getElementById('sort-select').onchange = (e) => {
+                state.sortBy = e.target.value;
+                renderList();
+            };
+
+            handleRoute();
         }
 
         function handleRoute() {
             const params = new URLSearchParams(window.location.search);
             const postId = params.get('p');
+            
             document.getElementById('loading').classList.add('hidden');
-            if (postId) showPost(postId);
-            else showList();
+            
+            if (postId && state.posts.find(p => p.id === postId)) {
+                showPost(postId);
+            } else {
+                showList();
+            }
             window.scrollTo(0, 0);
         }
 
         function showList() {
-            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
-            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
             document.getElementById('post-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
             renderList();
@@ -262,10 +235,8 @@
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
             
-            const allCats = state.posts.flatMap(p => p.categories);
-            const categories = ['All', ...new Set(allCats)];
-            
-            filterContainer.innerHTML = categories.map(cat => `
+            const allCats = ['All', ...new Set(state.posts.flatMap(p => p.categories))];
+            filterContainer.innerHTML = allCats.map(cat => `
                 <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
                     ${cat}
                 </button>
@@ -273,27 +244,22 @@
 
             let filtered = state.posts.filter(p => {
                 const matchesCat = state.currentFilter === 'All' || p.categories.includes(state.currentFilter);
-                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || 
-                                     p.excerpt.toLowerCase().includes(state.searchQuery);
+                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || p.excerpt.toLowerCase().includes(state.searchQuery);
                 return matchesCat && matchesSearch;
             });
 
             filtered.sort((a, b) => state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp);
 
             grid.innerHTML = filtered.map(post => `
-                <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 card-hover">
-                    <div class="flex flex-wrap gap-2 text-[10px] font-bold tracking-widest uppercase mb-4">
-                        <span class="text-[#94fdf8]">${post.categories.join(' / ')}</span>
-                        <span class="text-slate-700">•</span>
-                        <span class="text-slate-500">${post.date}</span>
+                <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition card-hover">
+                    <div class="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#94fdf8]">
+                        ${post.categories.join(' / ')} • ${post.date}
                     </div>
                     <h2 class="text-2xl font-bold mb-3 group-hover:text-[#94fdf8] transition">${post.title}</h2>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-2">${post.excerpt}</p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                            Read Post <span class="group-hover:translate-x-1 transition-transform">→</span>
-                        </div>
-                        <span class="text-[10px] text-slate-600 font-mono">${post.readTime} min read</span>
+                    <p class="text-slate-400 text-sm mb-6 line-clamp-2">${post.excerpt}</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-slate-500">
+                        <span>Read Post →</span>
+                        <span>${post.readTime} min read</span>
                     </div>
                 </article>
             `).join('');
@@ -303,45 +269,38 @@
 
         function showPost(id) {
             const post = state.posts.find(p => p.id === id);
-            if (!post) { router.navigate('/'); return; }
-
-            document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
-            document.getElementById('meta-desc').content = post.excerpt;
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('post-view').classList.remove('hidden');
-            document.getElementById('post-title').innerText = post.title;
             
-            const catHtml = post.categories.map(cat => `<span>${cat}</span>`).join(' <span class="text-slate-700">/</span> ');
-            document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
+            document.getElementById('post-title').innerText = post.title;
+            document.getElementById('post-meta-tags').innerHTML = post.categories.join(' <span class="text-slate-700">/</span> ') + ` <span class="text-slate-700">/</span> ` + post.date;
             document.getElementById('author-name').innerText = post.author;
-            document.getElementById('post-date').innerText = `Published ${post.date}`;
+            document.getElementById('post-date-full').innerText = `Published ${post.date}`;
             document.getElementById('read-time').innerText = `${post.readTime} min read`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            const postUrl = window.location.href;
-            document.getElementById('share-tw').onclick = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(postUrl)}`);
-            document.getElementById('share-fb').onclick = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`);
+            // Update Socials
+            const url = window.location.href;
+            document.getElementById('share-tw').onclick = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`);
             document.getElementById('share-copy').onclick = () => {
-                navigator.clipboard.writeText(postUrl).then(() => {
+                navigator.clipboard.writeText(url).then(() => {
                     const btn = document.getElementById('share-copy');
-                    const span = document.getElementById('copy-text');
-                    span.innerText = "Link Copied!";
-                    setTimeout(() => span.innerText = "Copy Link", 2000);
+                    btn.innerText = "Link Copied!";
+                    setTimeout(() => btn.innerText = "Copy Link", 2000);
                 });
             };
 
-            // Update and Render Cusdis
-            const thread = document.getElementById('cusdis_thread');
-            thread.dataset.pageId = post.id;
-            thread.dataset.pageUrl = postUrl;
-            thread.dataset.pageTitle = post.title;
-
+            // Update Comments
             if (window.renderCusdis) {
+                const thread = document.getElementById('cusdis_thread');
+                thread.dataset.pageId = post.id;
+                thread.dataset.pageUrl = url;
+                thread.dataset.pageTitle = post.title;
                 window.renderCusdis(thread);
             }
         }
 
-        window.addEventListener('popstate', handleRoute);
+        window.onpopstate = handleRoute;
         init();
     </script>
 </body>
