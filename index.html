@@ -22,9 +22,16 @@
         .brand-glow { text-shadow: 0 0 20px rgba(148, 253, 248, 0.2); }
         .card-hover:hover { border-color: #94fdf8; box-shadow: 0 0 25px rgba(148, 253, 248, 0.05); }
         input:focus { outline: none; border-color: #94fdf8 !important; box-shadow: 0 0 10px rgba(148, 253, 248, 0.1); }
+        
         /* Sharing Tooltip */
         .copy-notification { animation: fadeInOut 2s ease-in-out forwards; }
         @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(10px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10px); } }
+
+        /* Cusdis Theming Overrides */
+        #cusdis_thread iframe { 
+            color-scheme: dark !important;
+            filter: grayscale(0.2) contrast(1.1);
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
@@ -122,6 +129,7 @@
                             data-page-id=""
                             data-page-url=""
                             data-page-title=""
+                            data-theme="dark"
                         ></div>
                     </div>
                 </article>
@@ -139,9 +147,6 @@
     <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
-        /** * POST REGISTRY
-         * List your .md filenames here (without the .md extension).
-         */
         const postIds = [
             '2026/introducing-blog',
             '2026/making-exif-overlay'
@@ -167,10 +172,8 @@
         async function init() {
             try {
                 const loadedPosts = await Promise.all(postIds.map(fetchPost));
-                // Filter out any posts that failed to parse meaningful data
                 state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
                 
-                // Initialize Listeners
                 document.getElementById('search-input').addEventListener('input', (e) => {
                     state.searchQuery = e.target.value.toLowerCase();
                     renderList();
@@ -206,18 +209,13 @@
                         const value = metaMatch[2].trim();
                         meta[key] = value;
                     } else {
-                        // Avoid pushing empty header lines that were just markers
                         if (trimmed !== '##') contentLines.push(line);
                     }
                 });
 
                 const content = contentLines.join('\n').trim();
-
-                // Logic for precise sorting using date AND time
                 const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
                 const sortTimestamp = new Date(dateTimeStr).getTime();
-
-                // Support multiple categories separated by commas
                 const rawCategories = meta.category || 'Uncategorized';
                 const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
 
@@ -252,10 +250,8 @@
         }
 
         function showList() {
-            // Update Meta for SEO
             document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
             document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
-
             document.getElementById('post-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
             renderList();
@@ -264,8 +260,6 @@
         function renderList() {
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
-            
-            // Extract all unique categories across all posts
             const allCats = state.posts.flatMap(p => p.categories);
             const categories = ['All', ...new Set(allCats)];
             
@@ -275,18 +269,13 @@
                 </button>
             `).join('');
 
-            // Filtering: Post matches if "All" is selected OR if its categories array contains the filter
             let filtered = state.posts.filter(p => {
                 const matchesCat = state.currentFilter === 'All' || p.categories.includes(state.currentFilter);
-                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || 
-                                     p.excerpt.toLowerCase().includes(state.searchQuery);
+                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || p.excerpt.toLowerCase().includes(state.searchQuery);
                 return matchesCat && matchesSearch;
             });
 
-            // Advanced Sorting
-            filtered.sort((a, b) => {
-                return state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp;
-            });
+            filtered.sort((a, b) => state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp);
 
             if (filtered.length === 0) {
                 grid.innerHTML = `<p class="col-span-full py-10 text-slate-500 italic text-center">No posts found matching your criteria.</p>`;
@@ -321,70 +310,75 @@
                 return;
             }
 
-            // Update Meta for SEO
             document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
             document.getElementById('meta-desc').content = post.excerpt;
-
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('post-view').classList.remove('hidden');
-
             document.getElementById('post-title').innerText = post.title;
             
-            // Render multiple categories in the header
             const catHtml = post.categories.map(cat => `<span>${cat}</span>`).join(' <span class="text-slate-700">/</span> ');
             document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
-            
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            // Set up share buttons
+            // Re-render share buttons
             const shareUrl = encodeURIComponent(window.location.href);
             const shareTitle = encodeURIComponent(post.title);
-            
             document.getElementById('share-buttons').innerHTML = `
-                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition">
+                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     Post to X
                 </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                     Share
                 </a>
-                <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition">
+                <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                     Copy Link
                     <span id="copy-status" class="hidden absolute -top-10 left-1/2 -translate-x-1/2 bg-[#94fdf8] text-slate-950 px-3 py-1 rounded text-[10px] font-bold whitespace-nowrap copy-notification">Link Copied!</span>
                 </button>
             `;
 
-            // Update Cusdis thread
+            // Update Cusdis thread and re-render
             const cusdisThread = document.getElementById('cusdis_thread');
             if (cusdisThread) {
                 cusdisThread.setAttribute('data-page-id', post.id);
                 cusdisThread.setAttribute('data-page-url', window.location.href);
                 cusdisThread.setAttribute('data-page-title', post.title);
                 
-                // Trigger re-render if Cusdis is already loaded
-                if (window.renderCusdis) {
+                // If Cusdis is already loaded, use its internal refresh
+                if (window.CUSDIS && typeof window.CUSDIS.render === 'function') {
+                    window.CUSDIS.render(cusdisThread);
+                } else if (window.renderCusdis) {
                     window.renderCusdis(cusdisThread);
                 }
             }
         }
 
-        // Copy function
         window.copyPostLink = function() {
-            const el = document.createElement('textarea');
-            el.value = window.location.href;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            
+            const textToCopy = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopySuccess();
+                });
+            } else {
+                const el = document.createElement('textarea');
+                el.value = textToCopy;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showCopySuccess();
+            }
+        };
+
+        function showCopySuccess() {
             const status = document.getElementById('copy-status');
             status.classList.remove('hidden');
             setTimeout(() => status.classList.add('hidden'), 2000);
-        };
+        }
 
         window.addEventListener('popstate', handleRoute);
         init();
