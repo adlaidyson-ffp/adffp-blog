@@ -4,37 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="meta-title">Blog | Adlai Dyson | Fused Frame Photography</title>
-<<<<<<< HEAD
-    <meta name="description" id="meta-desc" content="Photography insights, technical guides, and project updates from Adlai Dyson.">
-=======
     <meta name="description" id="meta-desc" content="Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posst to learn about photography, skills, and my journey!">
->>>>>>> parent of 63687ef (Update index.html)
     <link rel="icon" href="https://cdn-eu.fusedframe.co.uk/main-logos/jpg/squarefavicon-nocircle.jpg">
-    
-    <!-- Analytics: Umami -->
-    <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
-    
-    <!-- Libraries -->
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
     <style>
-        .prose img { border-radius: 0.75rem; margin: 2rem 0; border: 1px solid #1e293b; }
-        .prose a { color: #94fdf8; text-decoration: none; font-weight: 500; }
+        .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; }
+        .prose a { color: #94fdf8; text-decoration: none; }
         .prose a:hover { text-decoration: underline; }
-        .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 2em; margin-bottom: 0.5em; }
-        .prose h1 { font-size: 1.875rem; }
-        .prose p { margin-bottom: 1.25em; line-height: 1.8; color: #cbd5e1; }
+        .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 1.5em; }
+        .prose p { margin-bottom: 1.25em; line-height: 1.75; color: #94a3b8; }
         .brand-glow { text-shadow: 0 0 20px rgba(148, 253, 248, 0.2); }
         .card-hover:hover { border-color: #94fdf8; box-shadow: 0 0 25px rgba(148, 253, 248, 0.05); }
         input:focus { outline: none; border-color: #94fdf8 !important; box-shadow: 0 0 10px rgba(148, 253, 248, 0.1); }
-<<<<<<< HEAD
-        #cusdis_thread iframe { width: 100% !important; color-scheme: dark; }
-=======
-        
-        /* Share button animation */
-        .share-btn:active { transform: scale(0.95); }
->>>>>>> parent of 63687ef (Update index.html)
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
@@ -42,21 +26,13 @@
     <!-- Header -->
     <header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-<<<<<<< HEAD
-            <a href="javascript:void(0)" onclick="router.navigate('/')" class="flex items-center gap-3">
-=======
             <a href="/" class="flex items-center gap-3">
->>>>>>> parent of 63687ef (Update index.html)
                 <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
-                <span class="font-bold text-xl tracking-tight hidden sm:inline uppercase">Blog</span>
+                <span class="font-bold text-xl tracking-tight hidden sm:inline">BLOG</span>
             </a>
             <nav class="flex gap-6 text-sm font-medium text-slate-400">
                 <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
-<<<<<<< HEAD
-                <a href="javascript:void(0)" onclick="router.navigate('/')" class="text-[#94fdf8]">Post Feed</a>
-=======
                 <a href="/" class="text-[#94fdf8]">Post Feed</a>
->>>>>>> parent of 63687ef (Update index.html)
             </nav>
         </div>
     </header>
@@ -69,25 +45,36 @@
                 <p class="text-slate-500">Developing frames...</p>
             </div>
 
-            <!-- List View -->
+            <!-- Blog List View -->
             <div id="list-view" class="hidden">
                 <div class="mb-12">
                     <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Posts</h1>
-                    <p class="text-slate-400 text-lg mb-8">Photography insights and technical logs.</p>
+                    <p class="text-slate-400 text-lg mb-8">Select a post below to read it.</p>
                     
                     <!-- Search and Sort Controls -->
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                        <input type="text" id="search-input" placeholder="Search posts..." 
-                            class="w-full md:max-w-md bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200">
-                        <select id="sort-select" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                        </select>
+                        <div class="relative w-full md:max-w-md">
+                            <input type="text" id="search-input" placeholder="Search titles or excerpts..." 
+                                class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200 focus:ring-1 focus:ring-[#94fdf8]">
+                            <span class="absolute right-3 top-2.5 text-slate-600 italic text-xs pointer-events-none">Search</span>
+                        </div>
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sort:</label>
+                            <select id="sort-select" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300 focus:ring-1 focus:ring-[#94fdf8] cursor-pointer">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div id="category-filter" class="flex flex-wrap gap-2 mb-8"></div>
-                <div id="posts-grid" class="grid gap-8 sm:grid-cols-2"></div>
+                <div id="category-filter" class="flex flex-wrap gap-2 mb-8">
+                    <!-- Categories injected here -->
+                </div>
+
+                <div id="posts-grid" class="grid gap-8 sm:grid-cols-2">
+                    <!-- Posts injected here -->
+                </div>
             </div>
 
             <!-- Single Post View -->
@@ -96,62 +83,36 @@
                     ← Back to feed
                 </button>
                 <article>
-                    <div class="mb-10">
-                        <div id="post-meta-tags" class="flex flex-wrap items-center gap-3 text-xs text-[#94fdf8] font-mono mb-4 uppercase tracking-widest"></div>
-                        <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6 leading-tight"></h1>
-                        <div class="flex items-center justify-between border-t border-slate-900 pt-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400">AD</div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-200" id="author-name"></p>
-                                    <p class="text-xs text-slate-500" id="post-date-full"></p>
-                                </div>
+                    <div id="post-header" class="mb-10">
+                        <div id="post-meta" class="flex flex-wrap gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
+                        <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
+                        <div id="post-author" class="flex items-center gap-3 border-t border-slate-900 pt-6">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">AD</div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-200" id="author-name"></p>
+                                <p class="text-xs text-slate-500" id="post-date"></p>
                             </div>
-                            <div id="read-time" class="text-xs text-slate-600 font-mono"></div>
                         </div>
                     </div>
-                    
-                    <div id="post-content" class="prose max-w-none mb-12 border-b border-slate-900 pb-12"></div>
-
-                    <!-- Socials & Comments -->
-                    <div class="flex flex-wrap gap-3 mb-12">
-                        <button id="share-tw" class="share-btn bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-slate-800 transition">X / Twitter</button>
-                        <button id="share-copy" class="share-btn bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-[#94fdf8] hover:text-slate-950 transition">Copy Link</button>
-                    </div>
-
-                    <div class="bg-slate-900/30 p-8 rounded-2xl border border-slate-900">
-                        <h3 class="text-xl font-bold mb-8">Comments</h3>
-                        <div id="cusdis_thread"
-                            data-host="https://bcomments.adffp.uk"
-                            data-app-id="a8d705af-b57b-483a-81cf-7177d83d6b5a"
-<<<<<<< HEAD
-=======
-                            data-page-id="{{ PAGE_ID }}"
-                            data-page-url="{{ PAGE_URL }}"
-                            data-page-title="{{ PAGE_TITLE }}"
->>>>>>> parent of 63687ef (Update index.html)
-                        ></div>
-                        <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
-                    </div>
+                    <div id="post-content" class="prose max-w-none"></div>
                 </article>
             </div>
         </div>
     </main>
 
     <footer class="mt-20 py-10 border-t border-slate-900 text-center text-sm text-slate-500">
-        <p class="font-medium text-slate-400">© Adlai Dyson | Fused Frame Photography</p>
-        <p class="text-xs mt-2">Running on blog.fusedframe.co.uk</p>
+        <p class="font-medium text-slate-400 mb-1">© Adlai Dyson | Fused Frame Photography. All rights reserved.</p>
+        <p class="text-xs">View more info at <a href="https://adffp.uk/copyright" class="text-slate-500 hover:text-[#94fdf8] underline underline-offset-4">adffp.uk/copyright</a></p>
+        <p class="mt-4 text-[10px] opacity-30">Running on blog.fusedframe.co.uk</p>
     </footer>
 
     <script>
-<<<<<<< HEAD
-        // List of .md files in your /posts/ folder
-=======
-        /** * POST REGISTRY */
->>>>>>> parent of 63687ef (Update index.html)
+        /** * POST REGISTRY
+         * List your .md filenames here (without the .md extension).
+         */
         const postIds = [
-            'introducing-blog',
-            'making-exif-overlay'
+            '2026/introducing-blog',
+            '2026/making-exif-overlay'
         ];
 
         const state = {
@@ -171,92 +132,77 @@
             }
         };
 
+        async function init() {
+            try {
+                const loadedPosts = await Promise.all(postIds.map(fetchPost));
+                // Filter out any posts that failed to parse meaningful data
+                state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
+                
+                // Initialize Listeners
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    state.searchQuery = e.target.value.toLowerCase();
+                    renderList();
+                });
+                document.getElementById('sort-select').addEventListener('change', (e) => {
+                    state.sortBy = e.target.value;
+                    renderList();
+                });
+
+                handleRoute();
+            } catch (err) {
+                console.error("Error loading blog posts:", err);
+                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
+            }
+        }
+
         async function fetchPost(id) {
             try {
-                const response = await fetch(`./posts/${id}.md`);
-                if (!response.ok) throw new Error(`Could not fetch ${id}`);
+                const response = await fetch(`/posts/${id}.md`);
+                if (!response.ok) return { id, title: 'Untitled Post' };
                 const text = await response.text();
                 
                 const lines = text.split('\n');
                 const meta = {};
-<<<<<<< HEAD
-                const bodyLines = [];
-                let finishedMeta = false;
-
-                for (let line of lines) {
-=======
                 const contentLines = [];
                 
                 lines.forEach(line => {
->>>>>>> parent of 63687ef (Update index.html)
                     const trimmed = line.trim();
-                    // Detect your specific metadata headers: ## key: value
                     const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
                     
-                    if (!finishedMeta && metaMatch) {
+                    if (metaMatch) {
                         const key = metaMatch[1].trim().toLowerCase();
                         const value = metaMatch[2].trim();
                         meta[key] = value;
                     } else {
-<<<<<<< HEAD
-                        // Once we hit a line that isn't metadata, treat rest as body
-                        if (trimmed !== '') finishedMeta = true; 
-                        bodyLines.push(line);
-=======
+                        // Avoid pushing empty header lines that were just markers
                         if (trimmed !== '##') contentLines.push(line);
->>>>>>> parent of 63687ef (Update index.html)
                     }
-                }
+                });
 
-                const content = bodyLines.join('\n').trim();
+                const content = contentLines.join('\n').trim();
+
+                // Logic for precise sorting using date AND time
                 const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
                 const sortTimestamp = new Date(dateTimeStr).getTime();
-<<<<<<< HEAD
-                
-                // Handle multiple categories
-                const categories = meta.category 
-                    ? meta.category.split(',').map(c => c.trim()) 
-                    : ['Uncategorized'];
-=======
+
+                // Support multiple categories separated by commas
                 const rawCategories = meta.category || 'Uncategorized';
                 const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
 
-                // Reading time calculation
-                const wordCount = content.split(/\s+/).length;
-                const readTime = Math.ceil(wordCount / 200);
->>>>>>> parent of 63687ef (Update index.html)
-
                 return {
-                    id,
+                    id: id,
                     title: meta.title || 'Untitled Post',
-                    date: meta.date || 'Unknown Date',
+                    date: meta.date || 'Recent',
+                    time: meta.time || '',
                     sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
                     author: meta.author || 'Adlai Dyson',
-                    categories,
-                    excerpt: meta.excerpt || content.substring(0, 150).replace(/[#*`]/g, '') + '...',
-                    content,
-                    readTime: Math.ceil(content.split(/\s+/).length / 200) || 1
+                    categories: categories,
+                    excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
+                    content: content
                 };
             } catch (e) {
-                console.warn(`Error processing post ${id}:`, e);
-                return null;
+                return { id, title: 'Untitled Post' };
             }
-        }
-
-        async function init() {
-            const results = await Promise.all(postIds.map(fetchPost));
-            state.posts = results.filter(p => p !== null);
-            
-            document.getElementById('search-input').oninput = (e) => {
-                state.searchQuery = e.target.value.toLowerCase();
-                renderList();
-            };
-            document.getElementById('sort-select').onchange = (e) => {
-                state.sortBy = e.target.value;
-                renderList();
-            };
-
-            handleRoute();
         }
 
         function handleRoute() {
@@ -265,7 +211,7 @@
             
             document.getElementById('loading').classList.add('hidden');
             
-            if (postId && state.posts.find(p => p.id === postId)) {
+            if (postId) {
                 showPost(postId);
             } else {
                 showList();
@@ -274,6 +220,10 @@
         }
 
         function showList() {
+            // Update Meta for SEO
+            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
+            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
+
             document.getElementById('post-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
             renderList();
@@ -283,96 +233,81 @@
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
             
-            const allCats = ['All', ...new Set(state.posts.flatMap(p => p.categories))];
-            filterContainer.innerHTML = allCats.map(cat => `
+            // Extract all unique categories across all posts
+            const allCats = state.posts.flatMap(p => p.categories);
+            const categories = ['All', ...new Set(allCats)];
+            
+            filterContainer.innerHTML = categories.map(cat => `
                 <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
                     ${cat}
                 </button>
             `).join('');
 
+            // Filtering: Post matches if "All" is selected OR if its categories array contains the filter
             let filtered = state.posts.filter(p => {
                 const matchesCat = state.currentFilter === 'All' || p.categories.includes(state.currentFilter);
-                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || p.excerpt.toLowerCase().includes(state.searchQuery);
+                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || 
+                                     p.excerpt.toLowerCase().includes(state.searchQuery);
                 return matchesCat && matchesSearch;
             });
 
-            filtered.sort((a, b) => state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp);
+            // Advanced Sorting
+            filtered.sort((a, b) => {
+                return state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full py-10 text-slate-500 italic text-center">No posts found matching your criteria.</p>`;
+                return;
+            }
 
             grid.innerHTML = filtered.map(post => `
-                <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition card-hover">
-                    <div class="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#94fdf8]">
-                        ${post.categories.join(' / ')} • ${post.date}
+                <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 card-hover">
+                    <div class="flex flex-wrap gap-2 text-[10px] font-bold tracking-widest uppercase mb-4">
+                        <span class="text-[#94fdf8]">${post.categories.join(' / ')}</span>
+                        <span class="text-slate-700">•</span>
+                        <span class="text-slate-500">${post.date}</span>
                     </div>
                     <h2 class="text-2xl font-bold mb-3 group-hover:text-[#94fdf8] transition">${post.title}</h2>
-                    <p class="text-slate-400 text-sm mb-6 line-clamp-2">${post.excerpt}</p>
-                    <div class="flex justify-between items-center text-xs font-mono text-slate-500">
-                        <span>Read Post →</span>
-                        <span>${post.readTime} min read</span>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3">${post.excerpt}</p>
+                    <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                        View Post <span class="group-hover:translate-x-1 transition-transform">→</span>
                     </div>
                 </article>
             `).join('');
         }
 
-        function setFilter(cat) { state.currentFilter = cat; renderList(); }
+        function setFilter(cat) {
+            state.currentFilter = cat;
+            renderList();
+        }
 
         function showPost(id) {
             const post = state.posts.find(p => p.id === id);
+            if (!post) {
+                router.navigate('/');
+                return;
+            }
+
+            // Update Meta for SEO
+            document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
+            document.getElementById('meta-desc').content = post.excerpt;
+
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('post-view').classList.remove('hidden');
-            
+
             document.getElementById('post-title').innerText = post.title;
-            document.getElementById('post-meta-tags').innerHTML = post.categories.join(' <span class="text-slate-700">/</span> ') + ` <span class="text-slate-700">/</span> ` + post.date;
+            
+            // Render multiple categories in the header
+            const catHtml = post.categories.map(cat => `<span>${cat}</span>`).join(' <span class="text-slate-700">/</span> ');
+            document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
+            
             document.getElementById('author-name').innerText = post.author;
-            document.getElementById('post-date-full').innerText = `Published ${post.date}`;
-            document.getElementById('read-time').innerText = `${post.readTime} min read`;
+            document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
-
-<<<<<<< HEAD
-            // Update Socials
-            const url = window.location.href;
-            document.getElementById('share-tw').onclick = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`);
-            document.getElementById('share-copy').onclick = () => {
-                navigator.clipboard.writeText(url).then(() => {
-                    const btn = document.getElementById('share-copy');
-                    btn.innerText = "Link Copied!";
-                    setTimeout(() => btn.innerText = "Copy Link", 2000);
-                });
-            };
-
-            // Update Comments
-            if (window.renderCusdis) {
-                const thread = document.getElementById('cusdis_thread');
-                thread.dataset.pageId = post.id;
-                thread.dataset.pageUrl = url;
-=======
-            // Update Social Share Links
-            const postUrl = window.location.href;
-            document.getElementById('share-tw').onclick = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(postUrl)}`);
-            document.getElementById('share-fb').onclick = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`);
-            document.getElementById('share-copy').onclick = () => {
-                const el = document.createElement('textarea');
-                el.value = postUrl;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                const copySpan = document.getElementById('copy-text');
-                copySpan.innerText = "Link Copied!";
-                setTimeout(() => copySpan.innerText = "Copy Link", 2000);
-            };
-
-            // Update Cusdis Thread
-            if (window.renderCusdis) {
-                const thread = document.getElementById('cusdis_thread');
-                thread.dataset.pageId = post.id;
-                thread.dataset.pageUrl = postUrl;
->>>>>>> parent of 63687ef (Update index.html)
-                thread.dataset.pageTitle = post.title;
-                window.renderCusdis(thread);
-            }
         }
 
-        window.onpopstate = handleRoute;
+        window.addEventListener('popstate', handleRoute);
         init();
     </script>
 </body>
