@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="meta-title">Blog | Adlai Dyson | Fused Frame Photography</title>
-    <meta name="description" id="meta-desc" content="Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posst to learn about photography, skills, and my journey!">
+    <meta name="description" id="meta-desc" content="Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posts to learn about photography, skills, and my journey!">
     <link rel="icon" href="https://cdn-eu.fusedframe.co.uk/main-logos/jpg/squarefavicon-nocircle.jpg">
     
     <!-- Analytics: Umami -->
@@ -24,9 +24,9 @@
         .brand-glow { text-shadow: 0 0 20px rgba(148, 253, 248, 0.2); }
         .card-hover:hover { border-color: #94fdf8; box-shadow: 0 0 25px rgba(148, 253, 248, 0.05); }
         input:focus { outline: none; border-color: #94fdf8 !important; box-shadow: 0 0 10px rgba(148, 253, 248, 0.1); }
-        
-        /* Share button animation */
         .share-btn:active { transform: scale(0.95); }
+        /* Style for Cusdis iframe container */
+        #cusdis_thread iframe { width: 100% !important; color-scheme: dark; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
@@ -34,13 +34,13 @@
     <!-- Header -->
     <header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" class="flex items-center gap-3">
+            <a href="/" onclick="event.preventDefault(); router.navigate('/')" class="flex items-center gap-3">
                 <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
                 <span class="font-bold text-xl tracking-tight hidden sm:inline uppercase">Blog</span>
             </a>
             <nav class="flex gap-6 text-sm font-medium text-slate-400">
                 <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
-                <a href="/" class="text-[#94fdf8]">Post Feed</a>
+                <a href="/" onclick="event.preventDefault(); router.navigate('/')" class="text-[#94fdf8]">Post Feed</a>
             </nav>
         </div>
     </header>
@@ -59,7 +59,6 @@
                     <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Posts</h1>
                     <p class="text-slate-400 text-lg mb-8">Select a post below to read it.</p>
                     
-                    <!-- Search and Sort Controls -->
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-800">
                         <div class="relative w-full md:max-w-md">
                             <input type="text" id="search-input" placeholder="Search titles or keywords..." 
@@ -127,9 +126,9 @@
                         <div id="cusdis_thread"
                             data-host="https://bcomments.adffp.uk"
                             data-app-id="a8d705af-b57b-483a-81cf-7177d83d6b5a"
-                            data-page-id="{{ PAGE_ID }}"
-                            data-page-url="{{ PAGE_URL }}"
-                            data-page-title="{{ PAGE_TITLE }}"
+                            data-page-id=""
+                            data-page-url=""
+                            data-page-title=""
                         ></div>
                         <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
                     </div>
@@ -149,7 +148,6 @@
     </footer>
 
     <script>
-        /** * POST REGISTRY */
         const postIds = [
             'introducing-blog',
             'making-exif-overlay'
@@ -202,7 +200,9 @@
                 const lines = text.split('\n');
                 const meta = {};
                 const contentLines = [];
-                
+                let inMeta = false;
+
+                // Simple but effective Markdown frontmatter parser (looking for ## key: value)
                 lines.forEach(line => {
                     const trimmed = line.trim();
                     const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
@@ -210,8 +210,8 @@
                         const key = metaMatch[1].trim().toLowerCase();
                         const value = metaMatch[2].trim();
                         meta[key] = value;
-                    } else {
-                        if (trimmed !== '##') contentLines.push(line);
+                    } else if (trimmed !== '##') {
+                        contentLines.push(line);
                     }
                 });
 
@@ -221,9 +221,8 @@
                 const rawCategories = meta.category || 'Uncategorized';
                 const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
 
-                // Reading time calculation
                 const wordCount = content.split(/\s+/).length;
-                const readTime = Math.ceil(wordCount / 200);
+                const readTime = Math.ceil(wordCount / 200) || 1;
 
                 return {
                     id: id,
@@ -319,28 +318,25 @@
             document.getElementById('read-time').innerText = `${post.readTime} min read`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            // Update Social Share Links
             const postUrl = window.location.href;
             document.getElementById('share-tw').onclick = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(postUrl)}`);
             document.getElementById('share-fb').onclick = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`);
             document.getElementById('share-copy').onclick = () => {
-                const el = document.createElement('textarea');
-                el.value = postUrl;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                const copySpan = document.getElementById('copy-text');
-                copySpan.innerText = "Link Copied!";
-                setTimeout(() => copySpan.innerText = "Copy Link", 2000);
+                navigator.clipboard.writeText(postUrl).then(() => {
+                    const btn = document.getElementById('share-copy');
+                    const span = document.getElementById('copy-text');
+                    span.innerText = "Link Copied!";
+                    setTimeout(() => span.innerText = "Copy Link", 2000);
+                });
             };
 
-            // Update Cusdis Thread
+            // Update and Render Cusdis
+            const thread = document.getElementById('cusdis_thread');
+            thread.dataset.pageId = post.id;
+            thread.dataset.pageUrl = postUrl;
+            thread.dataset.pageTitle = post.title;
+
             if (window.renderCusdis) {
-                const thread = document.getElementById('cusdis_thread');
-                thread.dataset.pageId = post.id;
-                thread.dataset.pageUrl = postUrl;
-                thread.dataset.pageTitle = post.title;
                 window.renderCusdis(thread);
             }
         }
