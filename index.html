@@ -11,7 +11,7 @@
     <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
     
     <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
     
@@ -31,7 +31,7 @@
 
         /* Cusdis Theming Overrides */
         #cusdis_thread {
-            min-height: 500px; /* Ensures space for the form */
+            min-height: 500px;
             width: 100%;
         }
         #cusdis_thread iframe { 
@@ -99,8 +99,8 @@
 
             <!-- Single Post View -->
             <div id="post-view" class="hidden">
-                <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to feed
+                <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition group">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Back to feed
                 </button>
                 <article>
                     <div id="post-header" class="mb-10">
@@ -191,7 +191,6 @@
                 });
 
                 handleRoute();
-                lucide.createIcons();
             } catch (err) {
                 console.error("Error loading blog posts:", err);
                 document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
@@ -255,7 +254,7 @@
                 showList();
             }
             window.scrollTo(0, 0);
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function showList() {
@@ -305,6 +304,8 @@
                     </div>
                 </article>
             `).join('');
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function setFilter(cat) {
@@ -331,36 +332,40 @@
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            // Re-render share buttons
+            // Share buttons with bright white icons to contrast slate
             const shareUrl = encodeURIComponent(window.location.href);
             const shareTitle = encodeURIComponent(post.title);
             document.getElementById('share-buttons').innerHTML = `
-                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <i data-lucide="twitter" class="w-4 h-4"></i>
+                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="twitter" class="w-4 h-4 text-[#94fdf8]"></i>
                     Post to X
                 </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <i data-lucide="facebook" class="w-4 h-4"></i>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="facebook" class="w-4 h-4 text-[#94fdf8]"></i>
                     Share
                 </a>
-                <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <i data-lucide="link" class="w-4 h-4"></i>
+                <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="link" class="w-4 h-4 text-[#94fdf8]"></i>
                     Copy Link
                     <span id="copy-status" class="hidden absolute -top-10 left-1/2 -translate-x-1/2 bg-[#94fdf8] text-slate-950 px-3 py-1 rounded text-[10px] font-bold whitespace-nowrap copy-notification">Link Copied!</span>
                 </button>
             `;
 
-            // Initialize icons for the dynamic content
-            lucide.createIcons();
+            // Force refresh icons
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            // Update Cusdis thread and re-render
+            // Update Cusdis thread
             const cusdisThread = document.getElementById('cusdis_thread');
             if (cusdisThread) {
+                // Important for routing: ensure metadata is correct
                 cusdisThread.setAttribute('data-page-id', post.id);
                 cusdisThread.setAttribute('data-page-url', window.location.href);
                 cusdisThread.setAttribute('data-page-title', post.title);
                 
-                if (window.CUSDIS && typeof window.CUSDIS.render === 'function') {
+                // Trigger Cusdis reload
+                if (window.renderCusdis) {
+                    window.renderCusdis(cusdisThread);
+                } else if (window.CUSDIS && typeof window.CUSDIS.render === 'function') {
                     window.CUSDIS.render(cusdisThread);
                 }
             }
