@@ -10,6 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
     
@@ -28,9 +30,14 @@
         @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(10px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10px); } }
 
         /* Cusdis Theming Overrides */
+        #cusdis_thread {
+            min-height: 500px; /* Ensures space for the form */
+            width: 100%;
+        }
         #cusdis_thread iframe { 
             color-scheme: dark !important;
-            filter: grayscale(0.2) contrast(1.1);
+            width: 100% !important;
+            min-height: 500px !important;
         }
     </style>
 </head>
@@ -93,7 +100,7 @@
             <!-- Single Post View -->
             <div id="post-view" class="hidden">
                 <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition">
-                    ← Back to feed
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to feed
                 </button>
                 <article>
                     <div id="post-header" class="mb-10">
@@ -118,9 +125,9 @@
                     </div>
 
                     <!-- Comments Section (Cusdis) -->
-                    <div class="mt-16 bg-slate-900/30 rounded-2xl p-6 md:p-10 border border-slate-900">
+                    <div class="mt-16 bg-slate-900/30 rounded-2xl p-6 md:p-10 border border-slate-900 overflow-hidden">
                         <h3 class="text-xl font-bold mb-8 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#94fdf8]"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <i data-lucide="message-square" class="text-[#94fdf8] w-5 h-5"></i>
                             Discussion
                         </h3>
                         <div id="cusdis_thread"
@@ -184,6 +191,7 @@
                 });
 
                 handleRoute();
+                lucide.createIcons();
             } catch (err) {
                 console.error("Error loading blog posts:", err);
                 document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
@@ -247,6 +255,7 @@
                 showList();
             }
             window.scrollTo(0, 0);
+            lucide.createIcons();
         }
 
         function showList() {
@@ -327,19 +336,22 @@
             const shareTitle = encodeURIComponent(post.title);
             document.getElementById('share-buttons').innerHTML = `
                 <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <i data-lucide="twitter" class="w-4 h-4"></i>
                     Post to X
                 </a>
                 <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <i data-lucide="facebook" class="w-4 h-4"></i>
                     Share
                 </a>
                 <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-300">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <i data-lucide="link" class="w-4 h-4"></i>
                     Copy Link
                     <span id="copy-status" class="hidden absolute -top-10 left-1/2 -translate-x-1/2 bg-[#94fdf8] text-slate-950 px-3 py-1 rounded text-[10px] font-bold whitespace-nowrap copy-notification">Link Copied!</span>
                 </button>
             `;
+
+            // Initialize icons for the dynamic content
+            lucide.createIcons();
 
             // Update Cusdis thread and re-render
             const cusdisThread = document.getElementById('cusdis_thread');
@@ -348,11 +360,8 @@
                 cusdisThread.setAttribute('data-page-url', window.location.href);
                 cusdisThread.setAttribute('data-page-title', post.title);
                 
-                // If Cusdis is already loaded, use its internal refresh
                 if (window.CUSDIS && typeof window.CUSDIS.render === 'function') {
                     window.CUSDIS.render(cusdisThread);
-                } else if (window.renderCusdis) {
-                    window.renderCusdis(cusdisThread);
                 }
             }
         }
