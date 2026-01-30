@@ -154,6 +154,13 @@
     <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
+        marked.setOptions({
+            mangle: false,
+            headerIds: false,
+            breaks: false
+        });
+    </script>
+    <script>
         const postIds = [
             '2026/introducing-blog',
             '2026/making-exif-overlay',
