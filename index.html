@@ -6,27 +6,17 @@
     <title id="meta-title">Blog | Adlai Dyson | Fused Frame Photography</title>
     <meta name="description" id="meta-desc" content="Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posts to learn about photography, skills, and my journey!">
     <link rel="icon" href="https://cdn-eu.fusedframe.co.uk/main-logos/jpg/squarefavicon-nocircle.jpg">
-
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Marked (Markdown parser) -->
+    <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
-
+    
     <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
-
+    
     <style>
-        .prose img {
-            border-radius: 0.75rem;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid #1e293b;
-            max-width: 100%;
-            height: auto;
-        }
+        .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; }
         .prose a { color: #94fdf8; text-decoration: none; }
         .prose a:hover { text-decoration: underline; }
         .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 1.5em; }
@@ -34,166 +24,379 @@
         .brand-glow { text-shadow: 0 0 20px rgba(148, 253, 248, 0.2); }
         .card-hover:hover { border-color: #94fdf8; box-shadow: 0 0 25px rgba(148, 253, 248, 0.05); }
         input:focus { outline: none; border-color: #94fdf8 !important; box-shadow: 0 0 10px rgba(148, 253, 248, 0.1); }
-
+        
+        /* Sharing Tooltip */
         .copy-notification { animation: fadeInOut 2s ease-in-out forwards; }
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(10px); }
-            15% { opacity: 1; transform: translateY(0); }
-            85% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(10px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10px); } }
 
-        #cusdis_thread { min-height: 500px; width: 100%; }
-        #cusdis_thread iframe {
+        /* Cusdis Theming Overrides */
+        #cusdis_thread {
+            min-height: 500px;
+            width: 100%;
+        }
+        #cusdis_thread iframe { 
             color-scheme: dark !important;
             width: 100% !important;
             min-height: 500px !important;
         }
     </style>
-
-    <!-- ✅ REQUIRED: allow raw HTML inside Markdown -->
-    <script>
-        marked.setOptions({
-            mangle: false,
-            headerIds: false
-        });
-    </script>
 </head>
-
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-<header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="/" class="flex items-center gap-3">
-            <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
-            <span class="font-bold text-xl tracking-tight hidden sm:inline">BLOG</span>
-        </a>
-        <nav class="flex gap-6 text-sm font-medium text-slate-400">
-            <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
-            <a href="/" class="text-[#94fdf8]">Post Feed</a>
-        </nav>
-    </div>
-</header>
-
-<main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
-<div id="app">
-
-<div id="loading" class="flex flex-col items-center justify-center py-20">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#94fdf8] mb-4"></div>
-    <p class="text-slate-500">Developing frames...</p>
-</div>
-
-<div id="list-view" class="hidden">
-    <div class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Posts</h1>
-        <p class="text-slate-400 text-lg mb-8">Select a post below to read it.</p>
-    </div>
-
-    <div id="category-filter" class="flex flex-wrap gap-2 mb-8"></div>
-    <div id="posts-grid" class="grid gap-8 sm:grid-cols-2"></div>
-</div>
-
-<div id="post-view" class="hidden">
-    <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition">
-        ← Back to feed
-    </button>
-
-    <article>
-        <div id="post-header" class="mb-10">
-            <div id="post-meta" class="flex flex-wrap gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
-            <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
-            <p class="text-xs text-slate-500" id="post-date"></p>
+    <!-- Header -->
+    <header class="border-b border-slate-900 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3">
+                <img src="https://cdn-eu.fusedframe.co.uk/main-logos/png/squarelogo-light-crop.png" alt="FFP" class="h-10 w-auto">
+                <span class="font-bold text-xl tracking-tight hidden sm:inline">BLOG</span>
+            </a>
+            <nav class="flex gap-6 text-sm font-medium text-slate-400">
+                <a href="https://www.fusedframe.co.uk" class="hover:text-white transition">Main Site</a>
+                <a href="/" class="text-[#94fdf8]">Post Feed</a>
+            </nav>
         </div>
+    </header>
 
-        <div id="post-content" class="prose max-w-none mb-12"></div>
-    </article>
-</div>
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+        <div id="app">
+            <!-- Loading State -->
+            <div id="loading" class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#94fdf8] mb-4"></div>
+                <p class="text-slate-500">Developing frames...</p>
+            </div>
 
-</div>
-</main>
+            <!-- Blog List View -->
+            <div id="list-view" class="hidden">
+                <div class="mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-glow">Posts</h1>
+                    <p class="text-slate-400 text-lg mb-8">Select a post below to read it.</p>
+                    
+                    <!-- Search and Sort Controls -->
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="relative w-full md:max-w-md">
+                            <input type="text" id="search-input" placeholder="Search titles or excerpts..." 
+                                class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200 focus:ring-1 focus:ring-[#94fdf8]">
+                            <span class="absolute right-3 top-2.5 text-slate-600 italic text-xs pointer-events-none">Search</span>
+                        </div>
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sort:</label>
+                            <select id="sort-select" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300 focus:ring-1 focus:ring-[#94fdf8] cursor-pointer">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-const postIds = [
-    '2026/introducing-blog',
-    '2026/making-exif-overlay',
-    '2026/volunteering-isu-eurofigure'
-];
+                <div id="category-filter" class="flex flex-wrap gap-2 mb-8">
+                    <!-- Categories injected here -->
+                </div>
 
-const state = {
-    posts: [],
-    currentFilter: 'All',
-    searchQuery: '',
-    sortBy: 'newest'
-};
+                <div id="posts-grid" class="grid gap-8 sm:grid-cols-2">
+                    <!-- Posts injected here -->
+                </div>
+            </div>
 
-const router = {
-    navigate: (path) => {
-        const url = new URL(window.location);
-        if (path === '/') url.searchParams.delete('p');
-        else url.searchParams.set('p', path);
-        window.history.pushState({}, '', url);
-        handleRoute();
-    }
-};
+            <!-- Single Post View -->
+            <div id="post-view" class="hidden">
+                <button onclick="router.navigate('/')" class="mb-8 text-sm text-slate-500 hover:text-[#94fdf8] flex items-center gap-2 transition group">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> < Back to feed
+                </button>
+                <article>
+                    <div id="post-header" class="mb-10">
+                        <div id="post-meta" class="flex flex-wrap gap-3 text-sm text-[#94fdf8] font-mono mb-4"></div>
+                        <h1 id="post-title" class="text-4xl md:text-6xl font-bold mb-6"></h1>
+                        <div id="post-author" class="flex items-center gap-3 border-t border-slate-900 pt-6">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">AD</div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-200" id="author-name"></p>
+                                <p class="text-xs text-slate-500" id="post-date"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="post-content" class="prose max-w-none mb-12"></div>
+                    
+                    <!-- Social Share -->
+                    <div class="border-y border-slate-900 py-8 mb-12">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Share this post</p>
+                        <div class="flex flex-wrap gap-3" id="share-buttons">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
 
-async function init() {
-    const loadedPosts = await Promise.all(postIds.map(fetchPost));
-    state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
-    handleRoute();
-}
+                    <!-- Comments Section (Cusdis) -->
+                    <div class="mt-16 bg-slate-900/30 rounded-2xl p-6 md:p-10 border border-slate-900 overflow-hidden">
+                        <h3 class="text-xl font-bold mb-8 flex items-center gap-2">
+                            <i data-lucide="message-square" class="text-[#94fdf8] w-5 h-5"></i>
+                            Discussion
+                        </h3>
+                        <div id="cusdis_thread"
+                            data-host="https://bcomments.adffp.uk"
+                            data-app-id="a8d705af-b57b-483a-81cf-7177d83d6b5a"
+                            data-page-id=""
+                            data-page-url=""
+                            data-page-title=""
+                            data-theme="dark"
+                        ></div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
 
-async function fetchPost(id) {
-    const response = await fetch(`/posts/${id}.md`);
-    const text = await response.text();
+    <footer class="mt-20 py-10 border-t border-slate-900 text-center text-sm text-slate-500">
+        <p class="font-medium text-slate-400 mb-1">© Adlai Dyson | Fused Frame Photography. All rights reserved.</p>
+        <p class="text-xs">View more info at <a href="https://adffp.uk/copyright" class="text-slate-500 hover:text-[#94fdf8] underline underline-offset-4">adffp.uk/copyright</a></p>
+        <p class="mt-4 text-[10px] opacity-30">Running on blog.fusedframe.co.uk</p>
+    </footer>
 
-    const lines = text.split('\n');
-    const meta = {};
-    const contentLines = [];
+    <!-- Cusdis script -->
+    <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
-    lines.forEach(line => {
-        const match = line.trim().match(/^##\s*([^:]+):\s*(.*)$/);
-        if (match) meta[match[1].toLowerCase()] = match[2];
-        else contentLines.push(line);
-    });
+    <script>
+        const postIds = [
+            '2026/introducing-blog',
+            '2026/making-exif-overlay',
+            '2026/volunteering-isu-eurofigure'
+        ];
 
-    return {
-        id,
-        title: meta.title,
-        date: meta.date,
-        author: meta.author,
-        categories: (meta.category || 'Uncategorized').split(',').map(c => c.trim()),
-        excerpt: contentLines.join(' ').substring(0, 160) + '...',
-        content: contentLines.join('\n')
-    };
-}
+        const state = {
+            posts: [],
+            currentFilter: 'All',
+            searchQuery: '',
+            sortBy: 'newest'
+        };
 
-function handleRoute() {
-    const params = new URLSearchParams(window.location.search);
-    const postId = params.get('p');
-    document.getElementById('loading').classList.add('hidden');
-    postId ? showPost(postId) : showList();
-}
+        const router = {
+            navigate: (path) => {
+                const url = new URL(window.location);
+                if (path === '/') url.searchParams.delete('p');
+                else url.searchParams.set('p', path);
+                window.history.pushState({}, '', url);
+                handleRoute();
+            }
+        };
 
-function showList() {
-    document.getElementById('meta-title').innerText =
-        'Blog | Adlai Dyson | Fused Frame Photography';
-}
+        async function init() {
+            try {
+                const loadedPosts = await Promise.all(postIds.map(fetchPost));
+                state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
+                
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    state.searchQuery = e.target.value.toLowerCase();
+                    renderList();
+                });
+                document.getElementById('sort-select').addEventListener('change', (e) => {
+                    state.sortBy = e.target.value;
+                    renderList();
+                });
 
-function showPost(id) {
-    const post = state.posts.find(p => p.id === id);
-    if (!post) return;
+                handleRoute();
+            } catch (err) {
+                console.error("Error loading blog posts:", err);
+                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
+            }
+        }
 
-    document.getElementById('meta-title').innerText =
-        `${post.title} | Blog | Adlai Dyson | Fused Frame Photography`;
+        async function fetchPost(id) {
+            try {
+                const response = await fetch(`/posts/${id}.md`);
+                if (!response.ok) return { id, title: 'Untitled Post' };
+                const text = await response.text();
+                
+                const lines = text.split('\n');
+                const meta = {};
+                const contentLines = [];
+                
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
+                    
+                    if (metaMatch) {
+                        const key = metaMatch[1].trim().toLowerCase();
+                        const value = metaMatch[2].trim();
+                        meta[key] = value;
+                    } else {
+                        if (trimmed !== '##') contentLines.push(line);
+                    }
+                });
 
-    document.getElementById('post-title').innerText = post.title;
-    document.getElementById('post-date').innerText = post.date;
-    document.getElementById('post-content').innerHTML = marked.parse(post.content);
-}
+                const content = contentLines.join('\n').trim();
+                const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
+                const sortTimestamp = new Date(dateTimeStr).getTime();
+                const rawCategories = meta.category || 'Uncategorized';
+                const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
 
-window.addEventListener('popstate', handleRoute);
-init();
-</script>
+                return {
+                    id: id,
+                    title: meta.title || 'Untitled Post',
+                    date: meta.date || 'Recent',
+                    time: meta.time || '',
+                    sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
+                    author: meta.author || 'Adlai Dyson',
+                    categories: categories,
+                    excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
+                    content: content
+                };
+            } catch (e) {
+                return { id, title: 'Untitled Post' };
+            }
+        }
 
+        function handleRoute() {
+            const params = new URLSearchParams(window.location.search);
+            const postId = params.get('p');
+            
+            document.getElementById('loading').classList.add('hidden');
+            
+            if (postId) {
+                showPost(postId);
+            } else {
+                showList();
+            }
+            window.scrollTo(0, 0);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function showList() {
+            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
+            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
+            document.getElementById('post-view').classList.add('hidden');
+            document.getElementById('list-view').classList.remove('hidden');
+            renderList();
+        }
+
+        function renderList() {
+            const grid = document.getElementById('posts-grid');
+            const filterContainer = document.getElementById('category-filter');
+            const allCats = state.posts.flatMap(p => p.categories);
+            const categories = ['All', ...new Set(allCats)];
+            
+            filterContainer.innerHTML = categories.map(cat => `
+                <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium border ${state.currentFilter === cat ? 'bg-[#94fdf8] text-slate-950 border-[#94fdf8]' : 'border-slate-800 text-slate-400 hover:border-slate-600'} transition">
+                    ${cat}
+                </button>
+            `).join('');
+
+            let filtered = state.posts.filter(p => {
+                const matchesCat = state.currentFilter === 'All' || p.categories.includes(state.currentFilter);
+                const matchesSearch = p.title.toLowerCase().includes(state.searchQuery) || p.excerpt.toLowerCase().includes(state.searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.sort((a, b) => state.sortBy === 'newest' ? b.sortTimestamp - a.sortTimestamp : a.sortTimestamp - b.sortTimestamp);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full py-10 text-slate-500 italic text-center">No posts found matching your criteria.</p>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(post => `
+                <article onclick="router.navigate('${post.id}')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 card-hover">
+                    <div class="flex flex-wrap gap-2 text-[10px] font-bold tracking-widest uppercase mb-4">
+                        <span class="text-[#94fdf8]">${post.categories.join(' / ')}</span>
+                        <span class="text-slate-700">•</span>
+                        <span class="text-slate-500">${post.date}</span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-3 group-hover:text-[#94fdf8] transition">${post.title}</h2>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3">${post.excerpt}</p>
+                    <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                        View Post <span class="group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                </article>
+            `).join('');
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function setFilter(cat) {
+            state.currentFilter = cat;
+            renderList();
+        }
+
+        function showPost(id) {
+            const post = state.posts.find(p => p.id === id);
+            if (!post) {
+                router.navigate('/');
+                return;
+            }
+
+            document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
+            document.getElementById('meta-desc').content = post.excerpt;
+            document.getElementById('list-view').classList.add('hidden');
+            document.getElementById('post-view').classList.remove('hidden');
+            document.getElementById('post-title').innerText = post.title;
+            
+            const catHtml = post.categories.map(cat => `<span>${cat}</span>`).join(' <span class="text-slate-700">/</span> ');
+            document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
+            document.getElementById('author-name').innerText = post.author;
+            document.getElementById('post-date').innerText = `Published ${post.date}`;
+            document.getElementById('post-content').innerHTML = marked.parse(post.content);
+
+            // Share buttons with bright white icons to contrast slate
+            const shareUrl = encodeURIComponent(window.location.href);
+            const shareTitle = encodeURIComponent(post.title);
+            document.getElementById('share-buttons').innerHTML = `
+                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="twitter" class="w-4 h-4 text-[#94fdf8]"></i>
+                    Post to X
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="facebook" class="w-4 h-4 text-[#94fdf8]"></i>
+                    Share
+                </a>
+                <button onclick="copyPostLink()" class="relative flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <i data-lucide="link" class="w-4 h-4 text-[#94fdf8]"></i>
+                    Copy Link
+                    <span id="copy-status" class="hidden absolute -top-10 left-1/2 -translate-x-1/2 bg-[#94fdf8] text-slate-950 px-3 py-1 rounded text-[10px] font-bold whitespace-nowrap copy-notification">Link Copied!</span>
+                </button>
+            `;
+
+            // Force refresh icons
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Update Cusdis thread
+            const cusdisThread = document.getElementById('cusdis_thread');
+            if (cusdisThread) {
+                // Important for routing: ensure metadata is correct
+                cusdisThread.setAttribute('data-page-id', post.id);
+                cusdisThread.setAttribute('data-page-url', window.location.href);
+                cusdisThread.setAttribute('data-page-title', post.title);
+                
+                // Trigger Cusdis reload
+                if (window.renderCusdis) {
+                    window.renderCusdis(cusdisThread);
+                } else if (window.CUSDIS && typeof window.CUSDIS.render === 'function') {
+                    window.CUSDIS.render(cusdisThread);
+                }
+            }
+        }
+
+        window.copyPostLink = function() {
+            const textToCopy = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopySuccess();
+                });
+            } else {
+                const el = document.createElement('textarea');
+                el.value = textToCopy;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showCopySuccess();
+            }
+        };
+
+        function showCopySuccess() {
+            const status = document.getElementById('copy-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 2000);
+        }
+
+        window.addEventListener('popstate', handleRoute);
+        init();
+    </script>
 </body>
 </html>
