@@ -119,7 +119,7 @@
                     <!-- Social Share -->
                     <div class="border-y border-slate-900 py-8 mb-12">
                         <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Share this post</p>
-                        <div class="flex flex-wrap gap-3" id="share-buttons-container">
+                        <div class="flex flex-wrap gap-3" id="share-buttons">
                             <!-- Injected by JS -->
                         </div>
                     </div>
@@ -154,14 +154,11 @@
     <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
-        // Use marked.use to set options for the parser to allow HTML tags
-        // allowDangerousHtml is key for rendering raw HTML <img> tags
-        marked.use({
+        // CRITICAL FIX: Tell the markdown parser NOT to escape raw HTML tags
+        marked.setOptions({
             headerIds: false,
             mangle: false,
-            gfm: true,
-            breaks: true,
-            allowDangerousHtml: true
+            html: true // This allows your <img> tags to work
         });
 
         const postIds = [
@@ -204,7 +201,7 @@
                 handleRoute();
             } catch (err) {
                 console.error("Error loading blog posts:", err);
-                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database. Ensure /posts/ directory is accessible.</p>`;
+                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database.</p>`;
             }
         }
 
@@ -342,13 +339,14 @@
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             
-            // marked.parse handles content rendering
+            // This is where we inject the markdown and allowed HTML
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            // Share buttons
+            // FIX: Share buttons injection
             const shareUrl = encodeURIComponent(window.location.href);
             const shareTitle = encodeURIComponent(post.title);
-            const shareContainer = document.getElementById('share-buttons-container');
+            const shareContainer = document.getElementById('share-buttons');
+            
             if (shareContainer) {
                 shareContainer.innerHTML = `
                     <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
@@ -367,8 +365,10 @@
                 `;
             }
 
-            // Force refresh icons
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            // CRITICAL: Re-scan for icons after injecting HTML
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
 
             // Update Cusdis thread
             const cusdisThread = document.getElementById('cusdis_thread');
