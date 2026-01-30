@@ -115,17 +115,20 @@
                         </div>
                     </div>
                     <div id="post-content" class="prose max-w-none mb-12"></div>
-                    
-                    <!-- Social Share -->
-                    <div class="border-y border-slate-900 py-8 mb-12">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Share this post</p>
-                        <div class="flex flex-wrap gap-3" id="share-buttons">
-                            <!-- Injected by JS -->
+
+                    <!-- Social Share Section -->
+                    <div class="mt-12 mb-16 bg-slate-900/30 rounded-2xl p-6 md:p-8 border border-slate-900">
+                        <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="share-2" class="text-[#94fdf8] w-5 h-5"></i>
+                            Share this post
+                        </h3>
+                        <div id="share-buttons" class="flex flex-wrap gap-3">
+                            <!-- Share buttons will be injected here -->
                         </div>
                     </div>
 
                     <!-- Comments Section (Cusdis) -->
-                    <div class="mt-16 bg-slate-900/30 rounded-2xl p-6 md:p-10 border border-slate-900 overflow-hidden">
+                    <div class="mt-8 bg-slate-900/30 rounded-2xl p-6 md:p-10 border border-slate-900 overflow-hidden">
                         <h3 class="text-xl font-bold mb-8 flex items-center gap-2">
                             <i data-lucide="message-square" class="text-[#94fdf8] w-5 h-5"></i>
                             Discussion
@@ -147,26 +150,21 @@
     <footer class="mt-20 py-10 border-t border-slate-900 text-center text-sm text-slate-500">
         <p class="font-medium text-slate-400 mb-1">© Adlai Dyson | Fused Frame Photography. All rights reserved.</p>
         <p class="text-xs">View more info at <a href="https://adffp.uk/copyright" class="text-slate-500 hover:text-[#94fdf8] underline underline-offset-4">adffp.uk/copyright</a></p>
-        <p class="mt-4 text-[10px] opacity-30">Running on blog.fusedframe.co.uk</p>
     </footer>
 
-    <!-- Cusdis script -->
-    <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
+    <!-- Cusdis Script -->
+    <script defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
-        // CRITICAL FIX: Tell the markdown parser NOT to escape raw HTML tags
+        // Configure marked to allow HTML
         marked.setOptions({
+            breaks: true,
+            gfm: true,
             headerIds: false,
-            mangle: false,
-            html: true // This allows your <img> tags to work
+            mangle: false
         });
 
-        const postIds = [
-            '2026/introducing-blog',
-            '2026/making-exif-overlay',
-            '2026/volunteering-isu-eurofigure'
-        ];
-
+        // State Management
         const state = {
             posts: [],
             currentFilter: 'All',
@@ -174,105 +172,112 @@
             sortBy: 'newest'
         };
 
+        // Router
         const router = {
-            navigate: (path) => {
-                const url = new URL(window.location);
-                if (path === '/') url.searchParams.delete('p');
-                else url.searchParams.set('p', path);
-                window.history.pushState({}, '', url);
+            navigate(path) {
+                history.pushState(null, '', path === '/' ? '/' : `/${path}`);
                 handleRoute();
             }
         };
 
-        async function init() {
-            try {
-                const loadedPosts = await Promise.all(postIds.map(fetchPost));
-                state.posts = loadedPosts.filter(p => p.title !== 'Untitled Post');
-                
-                document.getElementById('search-input').addEventListener('input', (e) => {
-                    state.searchQuery = e.target.value.toLowerCase();
-                    renderList();
-                });
-                document.getElementById('sort-select').addEventListener('change', (e) => {
-                    state.sortBy = e.target.value;
-                    renderList();
-                });
-
-                handleRoute();
-            } catch (err) {
-                console.error("Error loading blog posts:", err);
-                document.getElementById('loading').innerHTML = `<p class="text-red-400">Error loading post database.</p>`;
-            }
-        }
-
-        async function fetchPost(id) {
-            try {
-                const response = await fetch(`/posts/${id}.md`);
-                if (!response.ok) return { id, title: 'Untitled Post' };
-                const text = await response.text();
-                
-                const lines = text.split('\n');
-                const meta = {};
-                const contentLines = [];
-                
-                lines.forEach(line => {
-                    const trimmed = line.trim();
-                    const metaMatch = trimmed.match(/^##\s*([^:]+):\s*(.*)$/);
-                    
-                    if (metaMatch) {
-                        const key = metaMatch[1].trim().toLowerCase();
-                        const value = metaMatch[2].trim();
-                        meta[key] = value;
-                    } else {
-                        if (trimmed !== '##') contentLines.push(line);
-                    }
-                });
-
-                const content = contentLines.join('\n').trim();
-                const dateTimeStr = meta.date ? (meta.time ? `${meta.date} ${meta.time}` : `${meta.date} 00:00`) : '1970-01-01 00:00';
-                const sortTimestamp = new Date(dateTimeStr).getTime();
-                const rawCategories = meta.category || 'Uncategorized';
-                const categories = rawCategories.split(',').map(c => c.trim()).filter(c => c.length > 0);
-
-                return {
-                    id: id,
-                    title: meta.title || 'Untitled Post',
-                    date: meta.date || 'Recent',
-                    time: meta.time || '',
-                    sortTimestamp: isNaN(sortTimestamp) ? 0 : sortTimestamp,
-                    author: meta.author || 'Adlai Dyson',
-                    categories: categories,
-                    excerpt: meta.excerpt || content.substring(0, 160).replace(/[#*`]/g, '') + '...',
-                    content: content
-                };
-            } catch (e) {
-                return { id, title: 'Untitled Post' };
-            }
-        }
-
+        // Route Handler
         function handleRoute() {
-            const params = new URLSearchParams(window.location.search);
-            const postId = params.get('p');
-            
-            document.getElementById('loading').classList.add('hidden');
-            
-            if (postId) {
-                showPost(postId);
-            } else {
+            const path = window.location.pathname;
+            if (path === '/' || path === '') {
                 showList();
+            } else {
+                const postId = path.substring(1);
+                showPost(postId);
             }
-            window.scrollTo(0, 0);
-            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        // Initialize
+        async function init() {
+            await fetchPosts();
+            handleRoute();
+            
+            // Event Listeners
+            document.getElementById('search-input').addEventListener('input', e => {
+                state.searchQuery = e.target.value.toLowerCase();
+                renderList();
+            });
+
+            document.getElementById('sort-select').addEventListener('change', e => {
+                state.sortBy = e.target.value;
+                renderList();
+            });
+
+            document.getElementById('loading').classList.add('hidden');
+        }
+
+        // Fetch Posts from GitHub
+        async function fetchPosts() {
+            try {
+                const owner = 'ADFFP';
+                const repo = 'BlogPosts';
+                const path = 'posts';
+                const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const res = await fetch(url);
+                const files = await res.json();
+
+                const mdFiles = files.filter(f => f.name.endsWith('.md'));
+                const promises = mdFiles.map(async file => {
+                    const contentRes = await fetch(file.download_url);
+                    const text = await contentRes.text();
+                    return parsePost(text, file.name);
+                });
+
+                state.posts = await Promise.all(promises);
+            } catch (err) {
+                console.error('Error fetching posts:', err);
+                document.getElementById('loading').innerHTML = '<p class="text-red-500">Failed to load posts. Please check the console.</p>';
+            }
+        }
+
+        // Parse Markdown Post
+        function parsePost(content, filename) {
+            const lines = content.split('\n');
+            const metadata = {};
+            let contentStart = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('##')) {
+                    const [key, ...valueParts] = line.substring(2).trim().split(':');
+                    metadata[key.trim()] = valueParts.join(':').trim();
+                } else if (line === '') {
+                    contentStart = i + 1;
+                    break;
+                }
+            }
+
+            const postContent = lines.slice(contentStart).join('\n');
+            const id = filename.replace('.md', '');
+            const dateTime = new Date(`${metadata.date} ${metadata.time || '00:00'}`);
+
+            return {
+                id,
+                title: metadata.title || 'Untitled',
+                date: metadata.date || 'No date',
+                time: metadata.time || '',
+                author: metadata.author || 'Adlai Dyson',
+                categories: (metadata.category || 'General').split(',').map(c => c.trim()),
+                excerpt: metadata.excerpt || '',
+                content: postContent,
+                sortTimestamp: dateTime.getTime()
+            };
+        }
+
+        // Show List View
         function showList() {
-            document.getElementById('meta-title').innerText = "Blog | Fused Frame Photography";
-            document.getElementById('meta-desc').content = "Behind the lens, technical guides, and project updates from Adlai Dyson.";
+            document.getElementById('meta-title').innerText = 'Blog | Adlai Dyson | Fused Frame Photography';
+            document.getElementById('meta-desc').content = "Hey, I'm Adlai, an events and portraiture photographer from Rotherham. Join me here and read my posts to learn about photography, skills, and my journey!";
             document.getElementById('post-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
             renderList();
         }
 
+        // Render Post List
         function renderList() {
             const grid = document.getElementById('posts-grid');
             const filterContainer = document.getElementById('category-filter');
@@ -339,21 +344,21 @@
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
             
-            // This is where we inject the markdown and allowed HTML
+            // Render markdown with HTML enabled
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
-            // FIX: Share buttons injection
+            // Inject share buttons
             const shareUrl = encodeURIComponent(window.location.href);
             const shareTitle = encodeURIComponent(post.title);
             const shareContainer = document.getElementById('share-buttons');
             
             if (shareContainer) {
                 shareContainer.innerHTML = `
-                    <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
                         <i data-lucide="twitter" class="w-4 h-4 text-[#94fdf8]"></i>
                         Post to X
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold hover:border-[#94fdf8] transition text-slate-100">
                         <i data-lucide="facebook" class="w-4 h-4 text-[#94fdf8]"></i>
                         Share
                     </a>
@@ -365,7 +370,7 @@
                 `;
             }
 
-            // CRITICAL: Re-scan for icons after injecting HTML
+            // Re-initialize Lucide icons after DOM updates
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
