@@ -154,8 +154,8 @@
     <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
-        // Configure Marked to allow raw HTML tags
-        marked.setOptions({
+        // Use marked.use to set options for the parser to allow HTML tags
+        marked.use({
             headerIds: false,
             mangle: false,
             gfm: true,
@@ -339,6 +339,8 @@
             document.getElementById('post-meta').innerHTML = `${catHtml} <span class="text-slate-700">/</span> <span>${post.date}</span>`;
             document.getElementById('author-name').innerText = post.author;
             document.getElementById('post-date').innerText = `Published ${post.date}`;
+            
+            // marked.parse handles content rendering
             document.getElementById('post-content').innerHTML = marked.parse(post.content);
 
             // Share buttons with bright white icons to contrast slate
