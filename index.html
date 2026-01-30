@@ -16,7 +16,7 @@
     <script src="https://analytics.adffp.uk/script.js" data-website-id="c490b3f9-34ee-485d-b09a-5f869f545a12"></script>
     
     <style>
-        .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; }
+        .prose img { border-radius: 0.75rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid #1e293b; display: block; margin-left: auto; margin-right: auto; }
         .prose a { color: #94fdf8; text-decoration: none; }
         .prose a:hover { text-decoration: underline; }
         .prose h1, .prose h2, .prose h3 { color: #f8fafc; font-weight: 700; margin-top: 1.5em; }
@@ -154,6 +154,14 @@
     <script async defer src="https://bcomments.adffp.uk/js/cusdis.es.js"></script>
 
     <script>
+        // Configure Marked to allow raw HTML tags
+        marked.setOptions({
+            headerIds: false,
+            mangle: false,
+            gfm: true,
+            breaks: true
+        });
+
         const postIds = [
             '2026/introducing-blog',
             '2026/making-exif-overlay',
@@ -321,7 +329,7 @@
                 return;
             }
 
-            document.getElementById('meta-title').innerText = `${post.title} | Fused Frame Blog`;
+            document.getElementById('meta-title').innerText = `${post.title} | Blog | Adlai Dyson | Fused Frame Photography`;
             document.getElementById('meta-desc').content = post.excerpt;
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('post-view').classList.remove('hidden');
